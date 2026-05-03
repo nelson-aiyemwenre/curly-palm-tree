@@ -1,11 +1,29 @@
-INSERT INTO phases VALUES
-(1, 'Project Initiation',          '2025-06-02','2025-06-09',  6,  NULL),
-(2, 'Requirements & Planning',     '2025-06-10','2025-06-23',  10, 'PM, BA'),
-(3, 'Infrastructure Design',       '2025-06-24','2025-07-14',  15, 'SA, Net Eng'),
-(4, 'Procurement & Setup',         '2025-07-15','2025-08-04',  15, 'PM, Procurement'),
-(5, 'Infrastructure Implementation','2025-08-05','2025-09-08', 25, 'Sys Admin, Net Eng'),
-(6, 'System Integration',          '2025-09-09','2025-09-29',  15, 'SA, Dev'),
-(7, 'Security & Compliance',       '2025-09-30','2025-10-20',  15, 'Sec Eng, Compliance'),
-(8, 'Testing & QA',                '2025-10-21','2025-11-10',  15, 'QA, Dev'),
-(9, 'Training & Documentation',    '2025-11-11','2025-11-24',  10, 'PM, Trainer'),
-(10,'Deployment & Go-Live',        '2025-11-25','2026-07-10',  15, 'Sys Admin, Dev');
+-- E-Commerce Infrastructure Project DB
+CREATE TABLE phases (
+    phase_id     INT PRIMARY KEY,
+    phase_name   VARCHAR(100) NOT NULL,
+    start_date   DATE,
+    end_date     DATE,
+    duration_days INT,
+    resources    VARCHAR(200)
+);
+
+CREATE TABLE tasks (
+    task_id      INT PRIMARY KEY,
+    phase_id     INT REFERENCES phases(phase_id),
+    task_name    VARCHAR(200) NOT NULL,
+    duration     VARCHAR(20),
+    start_date   DATE,
+    finish_date  DATE,
+    predecessor  INT REFERENCES tasks(task_id),
+    is_milestone BOOLEAN DEFAULT FALSE,
+    resource     VARCHAR(100)
+);
+
+CREATE TABLE task_progress (
+    progress_id  SERIAL PRIMARY KEY,
+    task_id      INT REFERENCES tasks(task_id),
+    pct_complete DECIMAL(5,2) DEFAULT 0,
+    updated_at   TIMESTAMP DEFAULT NOW(),
+    notes        TEXT
+);
